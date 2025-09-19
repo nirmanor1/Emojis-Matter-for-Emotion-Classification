@@ -59,7 +59,6 @@ LLM-based **zero-/few-shot** multi-label classifier that batches inputs and call
 - Auto-detects whether texts contain emojis to pick the right prompt variant.
 - Validates the model’s JSON output with Pydantic (`labels` restricted to the 7-class set).
 - Batches (`BATCH_SIZE=20`) with retry + split-on-failure logic, then writes `predictions.csv` (`id,labels,num_labels`).
-- **CLI:** `python "few shot code.py" data/test.csv predictions.csv`  (expects columns: `id,text`). :contentReference[oaicite:0]{index=0}
 
 ### `fine_tune_emoji_roberta.py`
 Fine-tunes `cardiffnlp/twitter-roberta-base` for **multi-label** emotion classification on the **with-emojis** split.
@@ -68,7 +67,6 @@ Fine-tunes `cardiffnlp/twitter-roberta-base` for **multi-label** emotion classif
 - Metrics: **Jaccard**, **F1 (macro/micro/sample)**, **Hamming loss**, plus per-class precision/recall/F1; ensures at least one label (fallback to `other`).
 - Outputs: saved model + tokenizer under `results/emoji_roberta_emotion_local/`, rich plots in `training_plots/`, 
   `multilabel_evaluation_results.(txt|json)`, and a detailed test CSV including `tweet_id`, `emojis`, and per-class binary columns.  
-- **Run:** `python fine_tune_emoji_roberta.py` (expects data under `FinalData/split with emoji/`). :contentReference[oaicite:1]{index=1}
 
 ### `fine_tune_no_emoji_roberta.py`
 Same as `fine_tune_emoji_roberta.py`.
