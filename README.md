@@ -51,3 +51,25 @@ Unified **7-label** schema: `{ anger, disgust, fear, joy, sadness, surprise, oth
 - Emojis improve all aggregate metrics for the classical baseline.  
 - RoBERTa + emojis yields the strongest overall results.  
 - GPT-5 benefits modestly from emojis; zero-shot ≈ few-shot.
+
+## Code overview
+
+### `few shot code.py`
+LLM-based **zero-/few-shot** multi-label classifier that batches inputs and calls an Azure OpenAI chat model. It:
+- Auto-detects whether texts contain emojis to pick the right prompt variant.
+- Validates the model’s JSON output with Pydantic (`labels` restricted to the 7-class set).
+- Batches (`BATCH_SIZE=20`) with retry + split-on-failure logic, then writes `predictions.csv` (`id,labels,num_labels`).
+- **CLI:** `python "few shot code.py" data/test.csv predictions.csv`  (expects columns: `id,text`). :contentReference[oaicite:0]{index=0}
+
+### `fine_tune_emoji_roberta.py`
+Fine-tunes `cardiffnlp/twitter-roberta-base` for **multi-label** emotion classification on the **with-emojis** split.
+- Config (defaults): `max_length=256`, `lr=1e-5`, `batch_size=16`, `epochs=10`, `warmup=0.1`, `weight_decay=0.01`, seed=42.
+- Device-aware tweaks (CUDA/MPS/CPU), Kaggle/local path handling, HF `Trainer` with `problem_type="multi_label_classification"`.
+- Metrics: **Jaccard**, **F1 (macro/micro/sample)**, **Hamming loss**, plus per-class precision/recall/F1; ensures at least one label (fallback to `other`).
+- Outputs: saved model + tokenizer under `results/emoji_roberta_emotion_local/`, rich plots in `training_plots/`, 
+  `multilabel_evaluation_results.(txt|json)`, and a detailed test CSV including `tweet_id`, `emojis`, and per-class binary columns.  
+- **Run:** `python fine_tune_emoji_roberta.py` (expects data under `FinalData/split with emoji/`). :contentReference[oaicite:1]{index=1}
+
+### `fine_tune_no_emoji_roberta.py`
+Same as `fine_tune_emoji_roberta.py`.
+
