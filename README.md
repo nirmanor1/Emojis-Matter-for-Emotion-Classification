@@ -10,7 +10,7 @@ Many NLP pipelines strip emojis during preprocessing. This repo reproduces and e
 
 **Result:** Keeping emojis consistently improves multi-label emotion classification. The fine-tuned RoBERTa (with emojis) achieves the strongest overall performance and even outperforms the LLM configuration in this setup.
 
-> Paper: “Do Emojis Matter? Exploring the Role of Emojis in Sentiment Classification with Small and Large Language Models.” (PDF in repo/linked)  
+> Paper: “Do Emojis Matter? Exploring the Role of Emojis in Sentiment Classification with Small and Large Language Models.”
 > Key details (datasets, metrics, prompts, and ablation) are implemented here.
 
 ---
