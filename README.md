@@ -71,3 +71,12 @@ Fine-tunes `cardiffnlp/twitter-roberta-base` for **multi-label** emotion classif
 ### `fine_tune_no_emoji_roberta.py`
 Same as `fine_tune_emoji_roberta.py`.
 
+### `multilabel_logistic_regression.py`
+Classical **TF-IDF + One-vs-Rest Logistic Regression** baseline for the **with-emoji** and **no-emoji** splits.
+
+- **Tokenization:** custom “natural” tokenizer that preserves Unicode emojis as standalone tokens (used for the emoji split); standard TF-IDF for the no-emoji split.
+- **Vectorization:** TF-IDF (max_features=10k, n-grams=(1,2), stop_words='english'); min_df=2, max_df=0.95.
+- **Model:** `MultiOutputClassifier(LogisticRegression(class_weight='balanced'))` with `GridSearchCV` over `C ∈ {0.1,1,10}` and `solver ∈ {liblinear, lbfgs}`; `max_iter=1000`.
+- **Metrics:** Exact-Match Ratio, Hamming Loss (+ derived Accuracy), F1 (macro/micro/samples), Precision/Recall (macro), Jaccard; also per-emotion precision/recall/F1 and full binary reports.
+- **Outputs:** comprehensive text reports per condition, dataset statistics, and a side-by-side comparison figure `natural_discovery_comparison_plots.png`.
+- **Paths & run:** the script currently uses hard-coded paths to your train/validation/test CSVs; update `base_dir`, `emoji_dir`, and `no_emoji_dir` at the top of `main()` 
